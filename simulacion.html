@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Simulación de Llegada de Clientes</title>
+</head>
+<body>
+  <h1>Simulación de Llegada de Clientes</h1>
+  <p>Clientes atendidos: <span id="clientesAtendidos">0</span></p>
+
+  <button id="iniciarSimulacion">Iniciar Simulación</button>
+  <button id="detenerSimulacion">Detener Simulación</button>
+
+  <script>
+    
+    const tasaLlegadaClientes = 0.2; // Clientes por segundo en promedio
+
+    // Nombres
+    const nombres = ["Juan", "María", "Pedro", "Ana", "Luis", "Laura", "Carlos", "Sofía", "Miguel", "Isabel"];
+
+    
+    let tiempoTranscurrido = 0;
+    let clientesAtendidos = 0;
+    let simulacionActiva = false;
+    let simulacionInterval;
+
+    // Función para simular la llegada de clientes con nombres aleatorios
+    function llegadaClientes() {
+      if (simulacionActiva) {
+        const llegadaAleatoria = Math.random(); 
+        const nombreAleatorio = nombres[Math.floor(Math.random() * nombres.length)]; // Nombre aleatorio
+
+        
+        const tiempoHastaLlegada = -Math.log(1 - llegadaAleatoria) / tasaLlegadaClientes;
+
+        // Programa la próxima llegada de cliente
+        simulacionInterval = setTimeout(() => {
+          clientesAtendidos++;
+          document.getElementById("clientesAtendidos").textContent = clientesAtendidos;
+          console.log(`${nombreAleatorio} llegó al restaurante.`);
+
+          // Continuar la simulación
+          tiempoTranscurrido += tiempoHastaLlegada;
+          llegadaClientes();
+        }, tiempoHastaLlegada * 1000); // Convertir segundos a milisegundos
+      }
+    }
+
+    // Iniciar la simulación
+    function iniciarSimulacion() {
+      if (!simulacionActiva) {
+        simulacionActiva = true;
+        llegadaClientes();
+      }
+    }
+
+    // Detener la simulación
+    function detenerSimulacion() {
+      if (simulacionActiva) {
+        simulacionActiva = false;
+        clearTimeout(simulacionInterval);
+      }
+    }
+
+    const botonIniciarSimulacion = document.getElementById("iniciarSimulacion");
+    const botonDetenerSimulacion = document.getElementById("detenerSimulacion");
+
+    
+    botonIniciarSimulacion.addEventListener("click", iniciarSimulacion);
+    botonDetenerSimulacion.addEventListener("click", detenerSimulacion);
+  </script>
+</body>
+</html>
